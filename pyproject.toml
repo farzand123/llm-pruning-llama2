@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmprune"
+version = "1.0.0"
+description = "Comparative evaluation of magnitude, attention-head and layer pruning of LLaMA-2 with LoRA recovery"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Muhammad Farzand"}]
+# Only the pure-Python core is declared here. The GPU stack is pinned in requirements.txt
+# (thesis Table 10) so that `pip install -e .` never silently changes your torch build.
+dependencies = ["numpy", "pyyaml>=6.0"]
+
+[project.scripts]
+llmprune = "llmprune.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+llmprune = ["resources/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = ["torch: needs PyTorch + transformers (skipped when they are not installed)"]

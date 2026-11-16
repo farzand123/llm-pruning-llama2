@@ -1,0 +1,21 @@
+# Environment of thesis Table 10 (Python 3.10, CUDA 12.x). Install a CUDA build of torch first if your
+# platform needs a specific index URL, e.g.
+#   pip install torch==2.2.0 --index-url https://download.pytorch.org/whl/cu121
+torch==2.2.0
+transformers==4.38.2
+peft==0.10.0
+accelerate==0.27.0
+datasets==2.18.0
+lm_eval==0.4.2
+# torch 2.2.0 was built against NumPy 1.x and fails with NumPy 2.x, so the thesis' "NumPy 2.4" cannot
+# have been the version used together with this stack. 1.26.4 is the last 1.x release.
+numpy==1.26.4
+# transformers 4.38 / datasets 2.18 predate huggingface_hub 0.26, which removed APIs they still use.
+huggingface_hub>=0.20,<0.26
+safetensors
+tokenizers
+sentencepiece
+protobuf
+tqdm
+pyyaml>=6.0
+matplotlib==3.10.1

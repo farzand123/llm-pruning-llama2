@@ -1,0 +1,98 @@
+# Full thesis matrix: LLaMA-2-7B (primary) and LLaMA-2-13B (cross-scale efficiency check).
+# Every value that comes from the thesis cites the table/section; every value the thesis does
+# NOT state is marked "(not in thesis)" and listed in docs/SETTINGS_NOT_IN_THESIS.md.
+#
+# Run from the repository root:   llmprune plan --config configs/full.yaml
+
+seed: 42                                  # Table 13: PyTorch, NumPy and Python
+
+paths:                                    # relative to the working directory
+  recipes: recipes                        # small JSON files; commit these to git
+  adapters: adapters                      # LoRA adapters (tens of MB each)
+  results: results                        # one folder per condition
+  cache: cache                            # tokenised calibration samples (can be deleted)
+
+models:
+  7b:  {name_or_path: meta-llama/Llama-2-7b-hf,  revision: null}    # gated: accept the licence on the Hub
+  13b: {name_or_path: meta-llama/Llama-2-13b-hf, revision: null}    # a local directory path also works
+
+runtime:
+  dtype: bfloat16                         # Table 8 / III.B.1
+  device_map: auto                        # thesis: device_map="auto" over 4 x A100. "single" = GPU 0, "cpu" = no GPU
+  attn_implementation: null               # (not in thesis) null = library default (sdpa on transformers 4.38.2)
+
+calibration:                              # III.B.4: 128 sequences x 2,048 tokens from C4, seed 42
+  dataset: c4
+  c4_shard: en/c4-train.00000-of-01024.json.gz     # (not in thesis) shard used by SparseGPT/Wanda
+  c4_local_path: null                     # path to that .json.gz if the cluster has no internet
+  n_samples: 128
+  seqlen: 2048
+  batch_size: 4                           # (not in thesis) only affects speed of the Block Influence pass, not its result
+
+pruning:
+  magnitude: {}                           # global threshold over Q,K,V,O + FFN weights of all blocks (III.C.1)
+  heads:
+    min_heads_per_layer: 1                # (not in thesis) keeps every layer's attention alive; reported in the recipe
+    verify: true                          # compare pruned logits with "removed heads masked out" (catches indexing bugs)
+    taylor_batch_size: 1                  # (not in thesis) Algorithm 1 takes |sum| per batch; 1 = per sequence (as in LLM-Pruner)
+  layers:
+    bi_variant: frobenius                 # thesis Equation 5. 'cosine' = ShortGPT's definition (see README)
+
+evaluation:
+  batch_size: 8                           # (not in thesis) lm-evaluation-harness batch size
+  limit: null                             # null = full test/dev sets; an integer is for smoke tests only
+  add_bos_token: false                    # (not in thesis) lm-evaluation-harness default: no BOS token in front of the prompt
+  ppl:  {window: 2048, stride: 512}       # III.B.1: sliding window, test split
+  glue: {tasks: [sst2, mnli, qqp, qnli], num_fewshot: 0}   # (not in thesis) the GLUE protocol is not stated there; see docs/SETTINGS_NOT_IN_THESIS.md
+  mmlu: {num_fewshot: 5}                  # III.B.3: 5-shot, macro average over 57 subjects
+
+efficiency:                               # III.F protocol, now fully specified
+  settings: [single, auto]                # single GPU (clean) and device_map=auto (the thesis setting)
+  prompt_len: 128                         # (not in thesis)
+  new_tokens: 256                         # thesis: 256 output tokens
+  batch: 1                                # (not in thesis)
+  runs: 100                               # thesis: 100 runs
+  warmup: 10                              # thesis: 10 warm-up passes
+
+lora:                                     # Table 11
+  rank: 16
+  alpha_multiplier: 2                     # alpha = 2 x rank (alpha = 32 at r = 16)
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+  dataset: vicgalle/alpaca-gpt4           # Alpaca-GPT4, 52K examples
+  learning_rate: 3.0e-4
+  weight_decay: 0.01
+  micro_batch_size: 4
+  grad_accum: 8                           # effective batch 32
+  epochs: 3
+  # --- not stated in the thesis (documented defaults) ---
+  max_len: 512
+  warmup_steps: 100
+  max_grad_norm: 1.0
+  train_on_inputs: false                  # loss on the response only
+  device_map: single                      # one GPU per run keeps the effective batch at exactly 32
+  max_examples: null                      # null = all 52K; smoke tests only
+  max_steps: null                         # null = full schedule; smoke tests only
+
+matrix:                                   # Table 17
+  primary_model: 7b
+  secondary_model: 13b
+  methods: [magnitude, heads, layers]
+  ratios: [0.1, 0.2, 0.3, 0.4, 0.5, 0.7]  # no 60 % condition was run
+  # "Results reported" column of Table 17 (percent values; "all" = every ratio)
+  plain: {ppl: all, mmlu: all, glue: [30], efficiency: [30]}
+  lora:  {ppl: all, mmlu: [50], glue: [30], efficiency: []}
+  baseline:
+    primary:   {evals: [ppl, glue, mmlu], efficiency: true}
+    secondary: {evals: [], efficiency: true}
+  cross_scale:                            # Nos. 37-40; only the 30 % efficiency numbers were reported
+    model: 13b
+    method: heads
+    ratios: [0.1, 0.2, 0.3]
+    efficiency: [30]
+    lora: {ratios: [0.3], enabled: false} # No. 40: "Not reported"
+  rank_ablation:                          # No. 41 (r = 16 is the main LoRA condition)
+    method: heads
+    ratio: 0.5
+    ranks: [4, 8, 16, 32, 64]
+    evals: [ppl, mmlu]

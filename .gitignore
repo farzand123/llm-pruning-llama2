@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+venv/
+
+# Large or regenerable outputs.
+# recipes/ and results/ are small JSON files: COMMIT THEM, they are the evidence behind every table.
+adapters/
+adapters_*/
+recipes_quick/
+results_quick/
+reports/quick/
+cache/
+*.lock
+*.tmp
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

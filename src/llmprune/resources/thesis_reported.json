@@ -1,0 +1,269 @@
+{
+  "source": "Muhammad_Farzand_LLM_Thesis_Reviseqd.docx (revised thesis), Tables 18-24",
+  "units": {
+    "ppl": "WikiText-2 perplexity",
+    "glue/mmlu": "accuracy %",
+    "throughput": "tokens/s"
+  },
+  "note": "Values exactly as printed in the thesis. They were produced by code that is no longer available; use only as a comparison target.",
+  "baseline": {
+    "ppl": 6.97,
+    "mmlu": 45.3,
+    "glue": {
+      "sst2": 94.6,
+      "mnli": 82.4,
+      "qqp": 87.9,
+      "qnli": 91.3,
+      "average": 89.1
+    }
+  },
+  "ppl": {
+    "magnitude": {
+      "10": 7.08,
+      "20": 7.24,
+      "30": 7.61,
+      "40": 8.43,
+      "50": 10.12,
+      "70": 31.74
+    },
+    "magnitude_lora": {
+      "10": 7.02,
+      "20": 7.09,
+      "30": 7.31,
+      "40": 7.88,
+      "50": 8.57,
+      "70": 16.22
+    },
+    "heads": {
+      "10": 7.03,
+      "20": 7.18,
+      "30": 7.49,
+      "40": 8.01,
+      "50": 9.28,
+      "70": 19.64
+    },
+    "heads_lora": {
+      "10": 6.99,
+      "20": 7.07,
+      "30": 7.22,
+      "40": 7.67,
+      "50": 8.14,
+      "70": 12.88
+    },
+    "layers": {
+      "10": 7.11,
+      "20": 7.38,
+      "30": 7.82,
+      "40": 8.92,
+      "50": 11.47,
+      "70": 38.91
+    },
+    "layers_lora": {
+      "10": 7.04,
+      "20": 7.19,
+      "30": 7.51,
+      "40": 8.24,
+      "50": 9.36,
+      "70": 22.14
+    }
+  },
+  "glue_30": {
+    "magnitude": {
+      "sst2": 92.8,
+      "mnli": 79.6,
+      "qqp": 85.4,
+      "qnli": 88.7,
+      "average": 86.6
+    },
+    "magnitude_lora": {
+      "sst2": 93.9,
+      "mnli": 81.2,
+      "qqp": 86.8,
+      "qnli": 90.1,
+      "average": 88.0
+    },
+    "heads": {
+      "sst2": 93.4,
+      "mnli": 80.8,
+      "qqp": 86.7,
+      "qnli": 89.9,
+      "average": 87.7
+    },
+    "heads_lora": {
+      "sst2": 94.1,
+      "mnli": 81.8,
+      "qqp": 87.4,
+      "qnli": 90.8,
+      "average": 88.5
+    },
+    "layers": {
+      "sst2": 91.7,
+      "mnli": 77.9,
+      "qqp": 84.1,
+      "qnli": 87.3,
+      "average": 85.3
+    },
+    "layers_lora": {
+      "sst2": 93.2,
+      "mnli": 80.3,
+      "qqp": 86.2,
+      "qnli": 89.4,
+      "average": 87.3
+    }
+  },
+  "mmlu": {
+    "magnitude": {
+      "10": 44.9,
+      "20": 44.4,
+      "30": 43.6,
+      "40": 42.1,
+      "50": 39.8,
+      "70": 28.4,
+      "50_lora": 42.3
+    },
+    "heads": {
+      "10": 45.1,
+      "20": 44.7,
+      "30": 44.1,
+      "40": 43.0,
+      "50": 41.2,
+      "70": 32.6,
+      "50_lora": 43.8
+    },
+    "layers": {
+      "10": 44.7,
+      "20": 43.8,
+      "30": 42.7,
+      "40": 41.1,
+      "50": 38.2,
+      "70": 24.1,
+      "50_lora": 41.1
+    }
+  },
+  "params_30": {
+    "none": {
+      "structural_b": 6.738,
+      "nonzero_b": 6.738,
+      "cr_struct": 1.0,
+      "cr_nz": 1.0
+    },
+    "magnitude": {
+      "structural_b": 6.738,
+      "nonzero_b": 4.796,
+      "cr_struct": 1.0,
+      "cr_nz": 1.4
+    },
+    "heads": {
+      "structural_b": 6.095,
+      "nonzero_b": 6.095,
+      "cr_struct": 1.11,
+      "cr_nz": 1.11
+    },
+    "layers": {
+      "structural_b": 4.917,
+      "nonzero_b": 4.917,
+      "cr_struct": 1.37,
+      "cr_nz": 1.37
+    }
+  },
+  "efficiency_30": {
+    "7b-none": {
+      "flops_reduction_pct": null,
+      "analytic_weight_gb": 13.48,
+      "reported_gpu_memory_gb": 13.5,
+      "throughput_tok_s": 41.2,
+      "speedup": 1.0,
+      "params_b": 6.738
+    },
+    "7b-magnitude": {
+      "flops_reduction_pct": 0.0,
+      "analytic_weight_gb": 13.48,
+      "reported_gpu_memory_gb": 13.5,
+      "throughput_tok_s": 41.9,
+      "speedup": 1.02,
+      "params_b": 6.738
+    },
+    "7b-heads": {
+      "flops_reduction_pct": 11.3,
+      "analytic_weight_gb": 12.19,
+      "reported_gpu_memory_gb": 9.8,
+      "throughput_tok_s": 56.7,
+      "speedup": 1.38,
+      "params_b": 6.095
+    },
+    "7b-layers": {
+      "flops_reduction_pct": 27.6,
+      "analytic_weight_gb": 9.83,
+      "reported_gpu_memory_gb": 9.5,
+      "throughput_tok_s": 58.4,
+      "speedup": 1.42,
+      "params_b": 4.917
+    },
+    "13b-none": {
+      "flops_reduction_pct": null,
+      "analytic_weight_gb": 26.03,
+      "reported_gpu_memory_gb": 26.0,
+      "throughput_tok_s": 22.8,
+      "speedup": 1.0,
+      "params_b": 13.016
+    },
+    "13b-heads": {
+      "flops_reduction_pct": 11.0,
+      "analytic_weight_gb": 23.52,
+      "reported_gpu_memory_gb": 19.2,
+      "throughput_tok_s": 31.4,
+      "speedup": 1.38,
+      "params_b": 11.758
+    }
+  },
+  "recovery": {
+    "magnitude": {
+      "ppl_30": 0.47,
+      "ppl_50": 0.49,
+      "ppl_70": 0.63,
+      "glue_avg_30": 0.56,
+      "mmlu_50": 0.45
+    },
+    "heads": {
+      "ppl_30": 0.52,
+      "ppl_50": 0.49,
+      "ppl_70": 0.53,
+      "glue_avg_30": 0.57,
+      "mmlu_50": 0.63
+    },
+    "layers": {
+      "ppl_30": 0.36,
+      "ppl_50": 0.47,
+      "ppl_70": 0.53,
+      "glue_avg_30": 0.53,
+      "mmlu_50": 0.41
+    }
+  },
+  "rank_ablation": {
+    "4": {
+      "ppl": 9.84,
+      "mmlu": 41.6,
+      "trainable_millions": 3.15
+    },
+    "8": {
+      "ppl": 8.91,
+      "mmlu": 42.7,
+      "trainable_millions": 6.29
+    },
+    "16": {
+      "ppl": 8.14,
+      "mmlu": 43.8,
+      "trainable_millions": 12.58
+    },
+    "32": {
+      "ppl": 7.98,
+      "mmlu": 43.9,
+      "trainable_millions": 25.17
+    },
+    "64": {
+      "ppl": 7.96,
+      "mmlu": 43.9,
+      "trainable_millions": 50.33
+    }
+  }
+}

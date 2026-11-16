@@ -1,0 +1,46 @@
+# Smoke test of the whole pipeline on a small multi-head LLaMA model (minutes, not days).
+# It checks that pruning, evaluation, efficiency measurement, LoRA and the report all run on
+# your machine BEFORE you start the multi-day 7B matrix. Numbers from this config are
+# meaningless as research results.
+#
+#   llmprune plan --config configs/quick.yaml
+#   llmprune run  --config configs/quick.yaml
+#   llmprune report --config configs/quick.yaml
+extends: full.yaml
+
+paths: {recipes: recipes_quick, adapters: adapters_quick, results: results_quick}
+
+models:
+  tiny: {name_or_path: JackFram/llama-160m, revision: null}   # any small LLaMA with multi-head attention works
+
+runtime: {dtype: bfloat16, device_map: single}   # use "cpu" if you have no GPU
+
+calibration: {n_samples: 16, seqlen: 512}
+
+evaluation:
+  batch_size: 4
+  limit: 16
+  ppl: {window: 512, stride: 256}
+  glue: {tasks: [sst2, mnli, qqp, qnli], num_fewshot: 0}
+  mmlu: {num_fewshot: 5}
+
+efficiency: {settings: [single], prompt_len: 32, new_tokens: 32, batch: 1, runs: 5, warmup: 2}
+
+lora:
+  rank: 8
+  micro_batch_size: 4
+  grad_accum: 2
+  epochs: 1
+  max_len: 256
+  warmup_steps: 2
+  max_examples: 128
+  max_steps: 10
+
+matrix:
+  primary_model: tiny
+  secondary_model: null
+  ratios: [0.3, 0.5]
+  cross_scale: null
+  rank_ablation: {method: heads, ratio: 0.5, ranks: [4, 8, 16], evals: [ppl]}
+  plain: {ppl: all, mmlu: [50], glue: [30], efficiency: [30]}
+  lora:  {ppl: all, mmlu: [50], glue: [30], efficiency: []}

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the thesis it accompanies."
+title: "llmprune: magnitude, attention-head and layer pruning of LLaMA-2 with LoRA recovery"
+type: software
+authors:
+  - family-names: "Farzand"
+    given-names: "Muhammad"
+version: 1.0.0
+license: MIT
+abstract: "Code accompanying the Master's thesis 'Pruning Large Language Models' (Istanbul Aydin University, Institute of Graduate Studies, 2026): a controlled comparison of global magnitude pruning, Taylor-scored attention-head pruning and Block-Influence layer pruning of LLaMA-2-7B, with and without LoRA recovery."

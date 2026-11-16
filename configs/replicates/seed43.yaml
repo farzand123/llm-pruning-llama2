@@ -1,0 +1,9 @@
+# Replicate of the full matrix with another random seed (calibration sample, LoRA data order and
+# initialisation change; magnitude pruning without recovery is deterministic).
+#
+#   llmprune run --config configs/replicates/seed43.yaml
+#   llmprune aggregate --configs configs/full.yaml configs/replicates/seed43.yaml configs/replicates/seed44.yaml
+extends: ../full.yaml
+
+seed: 43
+paths: {recipes: recipes_seed43, adapters: adapters_seed43, results: results_seed43, cache: cache}
